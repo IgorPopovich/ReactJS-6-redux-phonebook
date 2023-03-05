@@ -13,8 +13,6 @@ import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import storage from 'redux-persist/lib/storage'
 import contactReducer from './features/contacts/contactSlice'
 
-//console.log(SLUSH)
-
 const rootReducer = combineReducers({
   contacts: contactReducer,
 })
