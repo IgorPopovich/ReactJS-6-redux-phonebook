@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid'
-import './ContactForm.css';
-import {useDispatch} from 'react-redux';
+import css from './ContactForm.module.css';
+import PropTypes from 'prop-types';
+import {useDispatch, useSelector} from 'react-redux';
 import {addContact} from '../../redux/features/contacts/contactSlice';
 
 const ContactForm = () => {
   const [name, setNume] = useState('')
   const [number, setNumber] = useState('')
   const dispatch = useDispatch()
+  const contacts = useSelector(state => state.contacts.contacts)
 
   const handleChangeNume = (event) => {
     setNume(event.target.value)
@@ -28,20 +30,29 @@ const ContactForm = () => {
       id: nanoid()
     } 
 
+    for (let item of contacts) {
+      if (item.name.includes(newContact.name)) {
+        alert(`${newContact.name} is already in contacts`)
+        setNume('')
+        setNumber('')
+        return;
+      }
+    }
+
     dispatch(addContact(newContact))
     setNume('')
     setNumber('')
   }
 
     return (
-    <div className='contactForm'>
-      <form onSubmit={handleSubmit} className='form' action="">
-        <label>
+    <div className={css.contactForm}>
+      <form onSubmit={handleSubmit} className={css.form} action="">
+        <label className={css.label}>
           Name
           <input
             onChange={handleChangeNume }
             value={name}
-            className='value'
+            className={css.value}
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -49,12 +60,12 @@ const ContactForm = () => {
             required
           />
         </label>
-        <label>
+        <label className={css.label}>
           Number
           <input
             onChange={handleChangeNumber }
             value={number}
-            className='value'
+            className={css.value}
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -62,12 +73,17 @@ const ContactForm = () => {
             required
           />
         </label>
-        <button type='submit' className='btnAdd'>Add contact</button>
+        <button type='submit' className={css.btnAdd}>Add contact</button>
       </form>
     </div>
   );
   
 };
+
+ContactForm.propTypes = {
+  nume: PropTypes.string,
+  number: PropTypes.string,
+}; 
 
 export default ContactForm;
 
