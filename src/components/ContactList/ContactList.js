@@ -1,15 +1,22 @@
 import React from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {deleteContact} from '../../redux/slices/contacts/contactSlice';
 import css from './ContactList.module.css';
 import PropTypes from 'prop-types';
 
-const ContactList = ({ contacts }) => {
+const ContactList = () => {
     const dispatch = useDispatch()
+    const contacts = useSelector(state => state.contacts.contacts)
+    const filter = useSelector(state => state.contacts.filter)
+  
+    const normalSize = filter.toLocaleLowerCase()
+    const visibleContacts = contacts.filter(contact => 
+      contact.name.toLocaleLowerCase().includes(normalSize)
+    )
 
     return <div>
         <ul className={css.contacts}>
-            {contacts.map(( {id, name, number}, index ) => (
+            {visibleContacts.map(( {id, name, number}, index ) => (
                 <li className={css.item} key={index}>
                     <p className={css.text}>{name}</p>
                     <p className={css.text}>{number}</p>
@@ -21,7 +28,7 @@ const ContactList = ({ contacts }) => {
 }
 
 ContactList.propTypes = {
-    contacts: PropTypes.array,
+    visibleContacts: PropTypes.array,
   }; 
 
 export default ContactList;
